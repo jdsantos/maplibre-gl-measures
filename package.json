@@ -1,0 +1,32 @@
+{
+  "name": "maplibre-gl-measures",
+  "version": "0.0.1",
+  "description": "Length and area measurements with linestrings and polygons",
+  "main": "dist/maplibre-gl-measures.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdsantos/maplibre-gl-measures.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jdsantos/maplibre-gl-measures/issues"
+  },
+  "homepage": "https://github.com/jdsantos/maplibre-gl-measures#readme",
+  "keywords": [
+    "maplibre",
+    "maplibre-gl-js",
+    "mapbox",
+    "mapbox-gl-js",
+    "redline",
+    "measures"
+  ],
+  "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.3.0",
+    "@turf/turf": "^6.5.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "maplibre-gl": ">=2.1.6"
+  },
+  "author": "Jorge Santos <https://jdsantos.github.io>",
+  "license": "MIT"
+}
