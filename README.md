@@ -1,5 +1,5 @@
 
-![maplibre-gl-measures](https://jdsantos.github.io/maplibre-gl-measures/docs/screenshot.png?v=11032020)
+![maplibre-gl-measures](https://raw.githubusercontent.com/jdsantos/maplibre-gl-measures/main/docs/screenshot.PNG)
 ============
 
 ## maplibre-gl-measures
