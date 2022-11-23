@@ -27,6 +27,11 @@ and then, in your code use it as follows:
 // Import it into your code
 import MeasuresControl from 'maplibre-gl-measures';
 
+// your map logic here...
+
+// add the plugin
+map.addControl(new MeasuresControl({}), "top-left");
+
 
 ```
 ### Supported Versions
