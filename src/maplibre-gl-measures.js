@@ -255,8 +255,7 @@ export default class MeasuresControl {
           'source': DRAW_LABELS_SOURCE_ID,
           'layout': {
             'text-font': [
-              'Open Sans Bold',
-              'Arial Unicode MS Bold'
+              'Klokantech Noto Sans Bold'
             ],
             'text-field': ['get', 'measurement'],
             'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
