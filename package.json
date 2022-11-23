@@ -2,7 +2,7 @@
   "name": "maplibre-gl-measures",
   "version": "0.0.1",
   "description": "Length and area measurements with linestrings and polygons",
-  "main": "dist/maplibre-gl-measures.js",
+  "main": "src/maplibre-gl-measures.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jdsantos/maplibre-gl-measures.git"
