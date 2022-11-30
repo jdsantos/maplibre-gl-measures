@@ -9,7 +9,7 @@ It's working with [Maplibre](http://maplibre.org) inspired by the great work don
 
 ## Demo
 
-<s>You can rush to the [demo here.](https://jdsantos.github.io/demos/maplibre-gl-measures/)</s>
+You can rush to the [demo here.](https://jdsantos.github.io/demos/maplibre-gl-measures/)
 
 
 ## Getting started
