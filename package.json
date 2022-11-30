@@ -1,5 +1,5 @@
 {
-  "name": "maplibre-gl-measures",
+  "name": "@jdsantos/maplibre-gl-measures",
   "version": "0.0.4",
   "description": "Length and area measurements with linestrings and polygons",
   "main": "src/maplibre-gl-measures.js",
