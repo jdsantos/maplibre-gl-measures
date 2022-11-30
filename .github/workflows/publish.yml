@@ -26,9 +26,7 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - run: echo "${NODE_AUTH_TOKEN}"
+          NODE_AUTH_TOKEN: ${{secrets.github_token}}
       - run: npm ci
-      - run: npm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
       - run: npm publish --access public
           
