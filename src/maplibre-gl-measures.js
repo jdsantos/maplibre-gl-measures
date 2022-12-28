@@ -1,6 +1,8 @@
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as turf from "@turf/turf";
 
+import * as convert from 'convert-units';
+
 const DRAW_LABELS_SOURCE_ID = 'source-draw-labels';
 const DRAW_LABELS_LAYER_ID = 'layer-draw-labels';
 const SOURCE_DATA = {
@@ -11,6 +13,7 @@ export default class MeasuresControl {
 
   constructor(options) {
     this.options = options;
+    this._measureConverter = convert();
     this._drawCtrl = new MapboxDraw({
       displayControlsDefault: false,
       styles: [
@@ -27,9 +30,9 @@ export default class MeasuresControl {
             "line-join": "round"
           },
           "paint": {
-            "line-color": "#D20C0C",
+            "line-color": this.options?.style?.lengthMeasurement?.lineColor ?? "#D20C0C",
             "line-dasharray": [0.2, 2],
-            "line-width": 2
+            "line-width": this.options?.style?.lengthMeasurement?.lineWidth ?? 2
           }
         },
         // polygon fill
@@ -40,9 +43,9 @@ export default class MeasuresControl {
             ["!=", "mode", "static"]
           ],
           "paint": {
-            "fill-color": "#D20C0C",
-            "fill-outline-color": "#D20C0C",
-            "fill-opacity": 0.1
+            "fill-color": this.options?.style?.areaMeasurement?.fillColor ?? "#D20C0C",
+            "fill-outline-color": this.options?.style?.areaMeasurement?.fillOutlineColor ?? "#D20C0C",
+            "fill-opacity": this.options?.style?.areaMeasurement?.fillOpacity ?? 0.1,
           }
         },
         // polygon mid points
@@ -54,8 +57,8 @@ export default class MeasuresControl {
             ['==', 'meta', 'midpoint']
           ],
           'paint': {
-            'circle-radius': 3,
-            'circle-color': '#fbb03b'
+            'circle-radius': this.options?.style?.common?.midPointRadius ?? 3,
+            'circle-color': this.options?.style?.common?.midPointColor ?? "#fbb03b",
           }
         },
         // polygon outline stroke
@@ -71,9 +74,9 @@ export default class MeasuresControl {
             "line-join": "round"
           },
           "paint": {
-            "line-color": "#D20C0C",
+            "line-color": this.options?.style?.areaMeasurement?.fillOutlineColor ?? "#D20C0C",
             "line-dasharray": [0.2, 2],
-            "line-width": 2
+            "line-width": this.options?.style?.areaMeasurement?.lineWidth ?? 2
           }
         },
         // vertex point halos
@@ -85,8 +88,8 @@ export default class MeasuresControl {
             ["!=", "mode", "static"]
           ],
           "paint": {
-            "circle-radius": 5,
-            "circle-color": "#FFF"
+            "circle-radius": this.options?.style?.common?.midPointHaloRadius ?? 3,
+            "circle-color": this.options?.style?.common?.midPointHaloColor ?? '#FFF',
           }
         },
         // vertex points
@@ -98,8 +101,8 @@ export default class MeasuresControl {
             ["!=", "mode", "static"]
           ],
           "paint": {
-            "circle-radius": 3,
-            "circle-color": "#D20C0C",
+            "circle-radius": this.options?.style?.common?.midPointRadius ?? 3,
+            "circle-color": this.options?.style?.common?.midPointColor ?? "#fbb03b",
           }
         },
 
@@ -116,8 +119,8 @@ export default class MeasuresControl {
             "line-join": "round"
           },
           "paint": {
-            "line-color": "#000",
-            "line-width": 3
+            "line-color": this.options?.style?.lengthMeasurement?.lineColor ?? "#D20C0C",
+            "line-width": this.options?.style?.lengthMeasurement?.lineWidth ?? 3
           }
         },
         // polygon fill
@@ -128,9 +131,9 @@ export default class MeasuresControl {
             ["==", "mode", "static"]
           ],
           "paint": {
-            "fill-color": "#000",
-            "fill-outline-color": "#000",
-            "fill-opacity": 0.1
+            "fill-color": this.options?.style?.areaMeasurement?.fillColor ?? "#000",
+            "fill-outline-color": this.options?.style?.areaMeasurement?.fillOutlineColor ?? "#000",
+            "fill-opacity": this.options?.style?.areaMeasurement?.fillOpacity ?? 0.1,
           }
         },
         // polygon outline
@@ -145,8 +148,8 @@ export default class MeasuresControl {
             "line-join": "round"
           },
           "paint": {
-            "line-color": "#000",
-            "line-width": 3
+            "line-color": this.options?.style?.areaMeasurement?.fillOutlineColor ?? "#000",
+            "line-width": this.options?.style?.areaMeasurement?.lineWidth ?? 2
           }
         }
       ]
@@ -171,11 +174,31 @@ export default class MeasuresControl {
     this.initClearBtn();
   }
 
+  _formatMeasure(dist) {
+    if (this.options?.units == 'imperial') {
+      return this._formatToImperialSystem(dist);
+    } else {
+      return this._formatToMetricSystem(dist);
+    }
+  }
+
+  _formatToMetricSystem (dist) {
+    let measure = convert(dist).from('m').toBest({ system: 'metric' });
+    return `${measure.val.toFixed(2)} ${measure.unit}`; 
+  }
+
+  _formatToImperialSystem (dist) {
+    let measure = convert(dist).from('m').to('mi');
+    measure = convert(measure).from('mi').toBest({ system: 'imperial' });
+    return `${measure.val.toFixed(2)} ${measure.unit}`; 
+  }
+
   initDrawBtn(mode) {
     let btn = document.createElement("button");
     btn.type = "button";
     switch (mode) {
       case this._drawCtrl.modes.DRAW_LINE_STRING:
+        btn.title = this.options?.lang?.lengthMeasurementButtonTitle ?? '';
         btn.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 viewBox="0 0 512 512" xml:space="preserve" style="padding:4px">
                <path d="M503.467,0h-51.2c-4.71,0-8.533,3.814-8.533,8.533v51.2c0,4.719,3.823,8.533,8.533,8.533h16.077
@@ -190,6 +213,7 @@ export default class MeasuresControl {
            </svg>`;
         break;
       case this._drawCtrl.modes.DRAW_POLYGON:
+        btn.title = this.options?.lang?.areaMeasurementButtonTitle ?? '';
         btn.innerHTML = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 38C18 40.2091 16.2091 42 14 42C11.7909 42 10 40.2091 10 38C10 35.7909 11.7909 34 14 34C16.2091 34 18 35.7909 18 38Z" fill="#333333"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M14 40C15.1046 40 16 39.1046 16 38C16 36.8954 15.1046 36 14 36C12.8954 36 12 36.8954 12 38C12 39.1046 12.8954 40 14 40ZM14 42C16.2091 42 18 40.2091 18 38C18 35.7909 16.2091 34 14 34C11.7909 34 10 35.7909 10 38C10 40.2091 11.7909 42 14 42Z" fill="#333333"/>
@@ -215,6 +239,7 @@ export default class MeasuresControl {
   initClearBtn() {
     let btn = document.createElement("button");
     btn.type = "button";
+    btn.title = this.options?.lang?.clearMeasurementsButtonTitle ?? '';
     btn.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                             style="padding:5px"
                             viewBox="0 0 465.311 465.311" style="enable-background:new 0 0 465.311 465.311;" xml:space="preserve">
@@ -259,9 +284,9 @@ export default class MeasuresControl {
             ],
             'text-field': ['get', 'measurement'],
             'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-            'text-radial-offset': 0.5,
+            'text-radial-offset': this.options?.style?.text?.radialOffset?? 0.5,
             'text-justify': 'auto',
-            'text-letter-spacing': 0.05,
+            'text-letter-spacing': this.options?.style?.text?.letterSpacing?? 0.05,
             'text-size': [
               "interpolate",
               ["linear"],
@@ -274,15 +299,16 @@ export default class MeasuresControl {
             ]
           },
           'paint': {
-            'text-color': '#D20C0C',
-            'text-halo-color': '#fff',
-            'text-halo-width': 10
+            'text-color': this.options?.style?.text?.color?? '#D20C0C',
+            'text-halo-color': this.options?.style?.text?.haloColor?? '#fff',
+            'text-halo-width': this.options?.style?.text?.haloWidth?? 10,
           },
         });
       });
       this._map.on('draw.create', this._updateLabels.bind(this));
       this._map.on('draw.update', this._updateLabels.bind(this));
       this._map.on('draw.delete', this._updateLabels.bind(this));
+      this._map.on('draw.render', this._updateLabels.bind(this));
     }
   }
 
@@ -294,26 +320,31 @@ export default class MeasuresControl {
     // Generate features from what we have on the drawControl:
     let drawnFeatures = this._drawCtrl.getAll();
     drawnFeatures.features.forEach((feature) => {
-      if (feature.geometry.type == 'Polygon') {
-        let area = turf.area(feature).toFixed(2);
-        let centroid = turf.centroid(feature);
-        let measurement = `${area}m²`;
-        centroid.properties = {
-          measurement,
-        };
-        features.push(centroid);
-      } else if (feature.geometry.type == 'LineString') {
-        let segments = turf.lineSegment(feature);
-        segments.features.forEach((segment) => {
-          let centroid = turf.centroid(segment);
-          let lineLength = (turf.length(segment) * 1000).toFixed(2); //km to m
-          let measurement = `${lineLength}m`;
+      try {
+        if (feature.geometry.type == 'Polygon') {
+          let area = this._formatMeasure(turf.area(feature));
+          let centroid = turf.centroid(feature);
+          let measurement = `${area}²`;
           centroid.properties = {
             measurement,
           };
           features.push(centroid);
-        });
+        } else if (feature.geometry.type == 'LineString') {
+          let segments = turf.lineSegment(feature);
+          segments.features.forEach((segment) => {
+            let centroid = turf.centroid(segment);
+            let lineLength = this._formatMeasure((turf.length(segment) * 1000)); //km to m
+            let measurement = `${lineLength}`;
+            centroid.properties = {
+              measurement,
+            };
+            features.push(centroid);
+          });
+        }
+      } catch(e) {
+         //Silently ignored
       }
+      
     });
     let data = {
       type: "FeatureCollection",

@@ -30,10 +30,53 @@ import MeasuresControl from 'maplibre-gl-measures';
 // your map logic here...
 
 // add the plugin
-map.addControl(new MeasuresControl({}), "top-left");
-
+map.addControl(new MeasuresControl({ /** see options below for further tunning */}), "top-left");
 
 ```
+
+## Options
+
+You can control the appearance, units by using the following:
+
+``` js
+options = {
+            lang: {
+                areaMeasurementButtonTitle: 'Measure area',
+                lengthMeasurementButtonTitle: 'Measure length',
+                clearMeasurementsButtonTitle:  'Clear measurements',
+            },
+            units: 'imperial', //or metric, the default
+            style: {
+                text: {
+                    radialOffset:  0.9,
+                    letterSpacing: 0.05,
+                    color: '#D20C0C',
+                    haloColor: '#fff',
+                    haloWidth: 0,
+                },
+                common: {
+                    midPointRadius: 3,
+                    midPointColor: '#D20C0C',
+                    midPointHaloRadius: 5,
+                    midPointHaloColor: '#FFF',
+                },
+                areaMeasurement: {
+                    fillColor: '#D20C0C',
+                    fillOutlineColor: '#D20C0C',
+                    fillOpacity: 0.01,
+                    lineWidth: 2,
+                },
+                lengthMeasurement: {
+                    lineWidth: 2,
+                    lineColor: "#D20C0C",
+                },
+            }
+        };
+
+map.addControl(new MeasuresControl(options));
+
+```
+
 ### Supported Versions
 
 Maplibre 2.4  and later versions should be supported. Earlier versions probably won\'t work (not even tested anymore).

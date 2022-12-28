@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Getting Started</title>
+    <title>Demo - maplibre-gl-measures</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
     <script src="../dist/maplibre-gl-measures.js"></script>
@@ -51,7 +51,39 @@
             center: [-8, 40], // starting position [lng, lat]
             zoom: 15 // starting zoom
         });
-        map.addControl(new maplibreGLMeasures.default({}), 'top-left');
+        map.addControl(new maplibreGLMeasures.default({
+            lang: {
+                areaMeasurementButtonTitle: 'Measure area',
+                lengthMeasurementButtonTitle: 'Measure length',
+                clearMeasurementsButtonTitle:  'Clear measurements',
+            },
+            units: 'imperial',
+            style: {
+                text: {
+                    radialOffset:  0.9,
+                    letterSpacing: 0.05,
+                    color: '#D20C0C',
+                    haloColor: '#fff',
+                    haloWidth: 0,
+                },
+                common: {
+                    midPointRadius: 3,
+                    midPointColor: '#D20C0C',
+                    midPointHaloRadius: 5,
+                    midPointHaloColor: '#FFF',
+                },
+                areaMeasurement: {
+                    fillColor: '#D20C0C',
+                    fillOutlineColor: '#D20C0C',
+                    fillOpacity: 0.01,
+                    lineWidth: 2,
+                },
+                lengthMeasurement: {
+                    lineWidth: 2,
+                    lineColor: "#D20C0C",
+                },
+            }
+        }), 'top-left');
     </script>
 </body>
 

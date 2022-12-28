@@ -7,4 +7,5 @@ module.exports = {
         filename: 'maplibre-gl-measures.js',
         library: "maplibreGLMeasures",
     },
+    devtool: 'source-map',
 };
