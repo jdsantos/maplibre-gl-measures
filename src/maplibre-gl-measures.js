@@ -174,12 +174,27 @@ export default class MeasuresControl {
     this.initClearBtn();
   }
 
-  _formatMeasure(dist) {
+  _formatMeasure(dist, isAreaMeasurement = false) {
     if (this.options?.units == 'imperial') {
-      return this._formatToImperialSystem(dist);
+      return isAreaMeasurement ? this._formatAreaToImperialSystem(dist) : this._formatToImperialSystem(dist);
     } else {
-      return this._formatToMetricSystem(dist);
+      return isAreaMeasurement ? this._formatAreaToMetricSystem(dist) : this._formatToMetricSystem(dist);
     }
+  }
+
+  // area in sqm 
+  _formatAreaToMetricSystem (dist) {
+    let measure = convert(dist).from('m2').toBest({ system: 'metric' });
+    let unit = measure.unit.replaceAll('2', '²');
+    return `${measure.val.toFixed(2)} ${unit}`; 
+  }
+
+  // area in sqm 
+  _formatAreaToImperialSystem (dist) {
+    let measure = convert(dist).from('m2').to('mi2');
+    measure = convert(measure).from('mi2').toBest({ system: 'imperial' });
+    let unit = measure.unit.replaceAll('2', '²');
+    return `${measure.val.toFixed(2)} ${unit}`; 
   }
 
   _formatToMetricSystem (dist) {
@@ -322,9 +337,9 @@ export default class MeasuresControl {
     drawnFeatures.features.forEach((feature) => {
       try {
         if (feature.geometry.type == 'Polygon') {
-          let area = this._formatMeasure(turf.area(feature));
+          let area = this._formatMeasure(turf.area(feature), true);
           let centroid = turf.centroid(feature);
-          let measurement = `${area}²`;
+          let measurement = `${area}`;
           centroid.properties = {
             measurement,
           };
