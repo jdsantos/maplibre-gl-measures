@@ -3,9 +3,9 @@
 ============
 
 ## maplibre-gl-measures
-A Maplibre plugin for taking length measures with lines and area measures with polygons.
+A MapLibre GL JS plugin for taking length measures with lines and area measures with polygons.
 
-It's working with [Maplibre](http://maplibre.org) inspired by the great work done by [mapbox/mapbox-gl-draw](https://github.com/mapbox/mapbox-gl-draw)
+It's working with [MapLibre GL JS](http://maplibre.org) inspired by the great work done by [mapbox/mapbox-gl-draw](https://github.com/mapbox/mapbox-gl-draw)
 
 ## Demo
 
@@ -79,7 +79,7 @@ map.addControl(new MeasuresControl(options));
 
 ### Supported Versions
 
-Maplibre 2.4  and later versions should be supported. Earlier versions probably won\'t work (not even tested anymore).
+MapLibre GL JS 2.4  and later versions should be supported. Earlier versions probably won\'t work (not even tested anymore).
 
 ---
 
