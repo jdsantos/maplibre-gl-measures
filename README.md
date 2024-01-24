@@ -46,6 +46,7 @@ options = {
                 clearMeasurementsButtonTitle:  'Clear measurements',
             },
             units: 'imperial', //or metric, the default
+            unitsGroupingSeparator: ' ', // optional. use a space instead of ',' for separating thousands (3 digits group). Do not send this to use the browser default
             style: {
                 text: {
                     radialOffset:  0.9,
@@ -53,6 +54,7 @@ options = {
                     color: '#D20C0C',
                     haloColor: '#fff',
                     haloWidth: 0,
+                    font: 'Klokantech Noto Sans Bold',
                 },
                 common: {
                     midPointRadius: 3,
