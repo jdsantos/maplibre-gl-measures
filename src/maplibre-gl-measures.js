@@ -327,6 +327,18 @@ export default class MeasuresControl {
     }
   }
 
+  _reorderLayers() {
+    if (this._map) {
+      let mapboxGlSources = Object.values(MapboxDraw.constants.sources);
+      this._map.getStyle().layers.filter((l) => mapboxGlSources.includes(l.source)).forEach((l) => {
+        this._map.moveLayer(l.id);  
+      });
+
+      // move to top
+      this._map.moveLayer(DRAW_LABELS_LAYER_ID);
+    }
+  }
+
   _updateLabels() {
     let source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
     // Build up the centroids for each segment into a features list, containing a property 
@@ -366,6 +378,8 @@ export default class MeasuresControl {
       features: features
     };
     source.setData(data);
+
+    this._reorderLayers();
   }
 
   onRemove() {
