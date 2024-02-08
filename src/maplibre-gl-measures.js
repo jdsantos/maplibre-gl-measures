@@ -397,6 +397,13 @@ export default class MeasuresControl {
 
   _updateLabels() {
     let source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
+    if (!source && this._map) { // in case of the source is somehow missing, recreate it
+      this._map.addSource(DRAW_LABELS_SOURCE_ID, {
+        type: "FeatureCollection",
+        data: [],
+      });
+    }
+
     // Build up the centroids for each segment into a features list, containing a property
     // to hold up the measurements
     let features = [];
