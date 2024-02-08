@@ -239,7 +239,7 @@ export default class MeasuresControl {
     let formattedNumber = val.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-      useGrouping: this.options?.unitsGroupingSeparator? false : true,
+      useGrouping: this.options?.unitsGroupingSeparator ? false : true,
     });
 
     let groupingSeparator = this.options?.unitsGroupingSeparator;
@@ -397,10 +397,14 @@ export default class MeasuresControl {
 
   _updateLabels() {
     let source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
-    if (!source && this._map) { // in case of the source is somehow missing, recreate it
+    if (!source && this._map) {
+      // in case of the source is somehow missing, recreate and empty one
       this._map.addSource(DRAW_LABELS_SOURCE_ID, {
-        type: "FeatureCollection",
-        data: [],
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
       });
     }
 
