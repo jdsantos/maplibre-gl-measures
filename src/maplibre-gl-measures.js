@@ -331,53 +331,58 @@ export default class MeasuresControl {
   _registerEvents() {
     if (this._map) {
       this._map.on("load", () => {
-        this._map.addSource(DRAW_LABELS_SOURCE_ID, {
-          type: "geojson",
-          data: SOURCE_DATA,
-        });
-        this._map.addLayer({
-          id: DRAW_LABELS_LAYER_ID,
-          type: "symbol",
-          source: DRAW_LABELS_SOURCE_ID,
-          layout: {
-            "text-font": [
-              this.options?.style?.text?.font ?? "Klokantech Noto Sans Bold",
-            ],
-            "text-field": ["get", "measurement"],
-            "text-variable-anchor": ["top", "bottom", "left", "right"],
-            "text-radial-offset":
-              this.options?.style?.text?.radialOffset ?? 0.5,
-            "text-justify": "auto",
-            "text-letter-spacing":
-              this.options?.style?.text?.letterSpacing ?? 0.05,
-            "text-size": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              5,
-              10,
-              10,
-              12.0,
-              13,
-              14.0,
-              14,
-              16.0,
-              18,
-              18.0, // Change 15.0 to 10.0 or lower
-            ],
-          },
-          paint: {
-            "text-color": this.options?.style?.text?.color ?? "#D20C0C",
-            "text-halo-color": this.options?.style?.text?.haloColor ?? "#fff",
-            "text-halo-width": this.options?.style?.text?.haloWidth ?? 10,
-          },
-        });
+        this._recreateSourceAndLayers();
       });
       this._map.on("draw.create", this._updateLabels.bind(this));
       this._map.on("draw.update", this._updateLabels.bind(this));
       this._map.on("draw.delete", this._updateLabels.bind(this));
       this._map.on("draw.render", this._updateLabels.bind(this));
     }
+  }
+
+  _recreateSourceAndLayers() {
+    if (!this._map.getSource(DRAW_LABELS_SOURCE_ID))
+      this._map.addSource(DRAW_LABELS_SOURCE_ID, {
+        type: "geojson",
+        data: SOURCE_DATA,
+      });
+    if (!this._map.getLayer(DRAW_LABELS_LAYER_ID))
+      this._map.addLayer({
+        id: DRAW_LABELS_LAYER_ID,
+        type: "symbol",
+        source: DRAW_LABELS_SOURCE_ID,
+        layout: {
+          "text-font": [
+            this.options?.style?.text?.font ?? "Klokantech Noto Sans Bold",
+          ],
+          "text-field": ["get", "measurement"],
+          "text-variable-anchor": ["top", "bottom", "left", "right"],
+          "text-radial-offset": this.options?.style?.text?.radialOffset ?? 0.5,
+          "text-justify": "auto",
+          "text-letter-spacing":
+            this.options?.style?.text?.letterSpacing ?? 0.05,
+          "text-size": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            5,
+            10,
+            10,
+            12.0,
+            13,
+            14.0,
+            14,
+            16.0,
+            18,
+            18.0, // Change 15.0 to 10.0 or lower
+          ],
+        },
+        paint: {
+          "text-color": this.options?.style?.text?.color ?? "#D20C0C",
+          "text-halo-color": this.options?.style?.text?.haloColor ?? "#fff",
+          "text-halo-width": this.options?.style?.text?.haloWidth ?? 10,
+        },
+      });
   }
 
   _reorderLayers() {
@@ -399,13 +404,7 @@ export default class MeasuresControl {
     let source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
     if (!source && this._map) {
       // in case of the source is somehow missing, recreate and empty one
-      this._map.addSource(DRAW_LABELS_SOURCE_ID, {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
+      this._recreateSourceAndLayers();
       source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
     }
 
