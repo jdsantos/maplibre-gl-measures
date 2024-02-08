@@ -406,6 +406,7 @@ export default class MeasuresControl {
           features: [],
         },
       });
+      source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
     }
 
     // Build up the centroids for each segment into a features list, containing a property
