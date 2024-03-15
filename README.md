@@ -79,6 +79,25 @@ map.addControl(new MeasuresControl(options));
 
 ```
 
+Optional drawing event callbacks can be added to the options. The features drawn will be passed to the callback. Use optional callbacks like:
+
+``` js
+
+// Handle onRender
+featureRenderCallback(feature) {            
+    console.log("Feature rendered:", feature);
+}
+
+// Handle onCreate
+featureCreateCallback(feature) {            
+    console.log("Feature created:", feature);
+}
+
+options.onRender = featureRenderCallback;
+options.onCreate = featureCreateCallback;
+
+```
+
 ### Supported Versions
 
 MapLibre GL JS 2.4  and later versions should be supported. Earlier versions probably won\'t work (not even tested anymore).
