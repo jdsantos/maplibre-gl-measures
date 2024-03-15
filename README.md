@@ -84,12 +84,12 @@ Optional drawing event callbacks can be added to the options. The features drawn
 ``` js
 
 // Handle onRender
-featureRenderCallback(feature) {            
+function featureRenderCallback(feature) {            
     console.log("Feature rendered:", feature);
 }
 
 // Handle onCreate
-featureCreateCallback(feature) {            
+function featureCreateCallback(feature) {            
     console.log("Feature created:", feature);
 }
 
