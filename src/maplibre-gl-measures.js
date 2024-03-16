@@ -1,7 +1,6 @@
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as turf from "@turf/turf";
 
-// import * as convert from "convert-units";
 import convert from 'convert-units';
 
 const DRAW_LABELS_SOURCE_ID = "source-draw-labels";
@@ -12,7 +11,6 @@ const SOURCE_DATA = {
 };
 export default class MeasuresControl {
   constructor(options) {
-    console.log("Declare new measures", convert);
     this.options = options;
     this._numberFormattingOptions = {
       minimumFractionDigits: 2,
@@ -485,7 +483,6 @@ export default class MeasuresControl {
         }
       } catch (e) {
         //Silently ignored
-        console.error(e);
       }
     });
     return {
