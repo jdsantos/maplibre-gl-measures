@@ -1,7 +1,7 @@
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as turf from "@turf/turf";
 
-import * as convert from "convert-units";
+import convert from 'convert-units';
 
 const DRAW_LABELS_SOURCE_ID = "source-draw-labels";
 const DRAW_LABELS_LAYER_ID = "layer-draw-labels";
@@ -333,10 +333,16 @@ export default class MeasuresControl {
       this._map.on("load", () => {
         this._recreateSourceAndLayers();
       });
-      this._map.on("draw.create", this._updateLabels.bind(this));
+      this._map.on("draw.create", () => {
+        this._updateLabels();
+        this._handleOnCreate();
+      });
       this._map.on("draw.update", this._updateLabels.bind(this));
       this._map.on("draw.delete", this._updateLabels.bind(this));
-      this._map.on("draw.render", this._updateLabels.bind(this));
+      this._map.on("draw.render", () => {
+        this._updateLabels();
+        this._handleOnRender();
+      });
     }
   }
 
@@ -398,6 +404,36 @@ export default class MeasuresControl {
       // move to top
       this._map.moveLayer(DRAW_LABELS_LAYER_ID);
     }
+  }  
+
+  /**
+   * Handles the optional onRender callback provided in the options
+   */
+  _handleOnRender() {
+    if (this.options && this.options.onRender !== null && this.options.onRender !== undefined && this.options.onRender instanceof Function) {
+      const features = this._getDrawnFeatures();
+      // Pass drawn features to callback
+      try {
+        this.options.onRender.call(this, features);
+      } catch(e) {
+        console.error(e);
+      }
+    }
+  }
+
+  /**
+   * Handles the optional onCreate callback provided in the options
+   */
+  _handleOnCreate() {
+    if (this.options && this.options.onCreate !== null && this.options.onCreate !== undefined && this.options.onCreate instanceof Function) {
+      const features = this._getDrawnFeatures();
+      // Pass drawn features to callback
+      try {
+        this.options.onCreate.call(this, features);
+      } catch(e) {
+        console.error(e);
+      }
+    }
   }
 
   _updateLabels() {
@@ -408,6 +444,16 @@ export default class MeasuresControl {
       source = this._map.getSource(DRAW_LABELS_SOURCE_ID);
     }
 
+    const data = this._getDrawnFeatures();
+    source.setData(data);
+    this._reorderLayers();
+  }
+
+  /**
+   * Retrieves features drawn on the map
+   * @returns {Object} A FeatureCollection of drawn features
+   */
+  _getDrawnFeatures() {
     // Build up the centroids for each segment into a features list, containing a property
     // to hold up the measurements
     let features = [];
@@ -439,13 +485,10 @@ export default class MeasuresControl {
         //Silently ignored
       }
     });
-    let data = {
+    return {
       type: "FeatureCollection",
       features: features,
     };
-    source.setData(data);
-
-    this._reorderLayers();
   }
 
   onRemove() {
