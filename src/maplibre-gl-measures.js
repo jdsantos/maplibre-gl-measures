@@ -410,11 +410,11 @@ export default class MeasuresControl {
    * Handles the optional onRender callback provided in the options
    */
   _handleOnRender() {
-    if (this.options && this.options.onRender !== null && this.options.onRender !== undefined) {
+    if (this.options && this.options.onRender !== null && this.options.onRender !== undefined && this.options.onRender instanceof Function) {
       const features = this._getDrawnFeatures();
       // Pass drawn features to callback
       try {
-        this.options.onRender(features);
+        this.options.onRender.call(this, features);
       } catch(e) {
         console.error(e);
       }
@@ -425,11 +425,11 @@ export default class MeasuresControl {
    * Handles the optional onCreate callback provided in the options
    */
   _handleOnCreate() {
-    if (this.options && this.options.onCreate !== null && this.options.onCreate !== undefined) {
+    if (this.options && this.options.onCreate !== null && this.options.onCreate !== undefined && this.options.onCreate instanceof Function) {
       const features = this._getDrawnFeatures();
       // Pass drawn features to callback
       try {
-        this.options.onCreate(features);
+        this.options.onCreate.call(this, features);
       } catch(e) {
         console.error(e);
       }
