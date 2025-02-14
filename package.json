@@ -8,6 +8,7 @@
     "dist"
   ],
   "scripts": {
+    "format": "prettier --write src/*.{js,ts}",
     "build": "webpack",
     "dev": "webpack --watch"
   },
@@ -33,6 +34,7 @@
     "convert-units": "^2.3.4"
   },
   "devDependencies": {
+    "prettier": "^3.5.1",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0"
   },
