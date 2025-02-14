@@ -1,8 +1,9 @@
 {
   "name": "maplibre-gl-measures",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Length and area measurements with linestrings and polygons",
   "main": "src/maplibre-gl-measures.js",
+  "types": "src/maplibre-gl-measures.d.ts",
   "files": [
     "dist"
   ],
@@ -28,7 +29,7 @@
   ],
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.4.3",
-    "@turf/turf": "^6.5.0",
+    "@turf/turf": "^7.2.0",
     "convert-units": "^2.3.4"
   },
   "devDependencies": {
