@@ -1,6 +1,5 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
-
 import convert from 'convert-units';
 
 const DRAW_LABELS_SOURCE_ID = 'source-draw-labels';
@@ -9,6 +8,7 @@ const SOURCE_DATA = {
 	type: 'FeatureCollection',
 	features: [],
 };
+
 export default class MeasuresControl {
 	constructor(options) {
 		this.options = options;
@@ -151,7 +151,7 @@ export default class MeasuresControl {
 	}
 
 	_formatMeasure(dist, isAreaMeasurement = false) {
-		if (this.options?.units == 'imperial') {
+		if (this.options?.units === 'imperial') {
 			return isAreaMeasurement ? this._formatAreaToImperialSystem(dist) : this._formatToImperialSystem(dist);
 		} else {
 			return isAreaMeasurement ? this._formatAreaToMetricSystem(dist) : this._formatToMetricSystem(dist);
@@ -193,7 +193,7 @@ export default class MeasuresControl {
 		let formattedNumber = val.toLocaleString(undefined, {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
-			useGrouping: this.options?.unitsGroupingSeparator ? false : true,
+			useGrouping: !this.options?.unitsGroupingSeparator,
 		});
 
 		let groupingSeparator = this.options?.unitsGroupingSeparator;
@@ -211,7 +211,7 @@ export default class MeasuresControl {
 		switch (mode) {
 			case this._drawCtrl.modes.DRAW_LINE_STRING:
 				btn.title = this.options?.lang?.lengthMeasurementButtonTitle ?? '';
-				btn.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+				btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 512 512" xml:space="preserve" style="padding:4px">
                <path d="M503.467,0h-51.2c-4.71,0-8.533,3.814-8.533,8.533v51.2c0,4.719,3.823,8.533,8.533,8.533h16.077
                    c-15.027,136.132-31.095,243.354-75.81,275.678V332.8c0-4.719-3.823-8.533-8.533-8.533h-51.2c-4.71,0-8.533,3.814-8.533,8.533
@@ -252,8 +252,8 @@ export default class MeasuresControl {
 		let btn = document.createElement('button');
 		btn.type = 'button';
 		btn.title = this.options?.lang?.clearMeasurementsButtonTitle ?? '';
-		btn.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            viewBox="0 0 465.311 465.311" style="enable-background:new 0 0 465.311 465.311;padding:5px" xml:space="preserve">
+		btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 465.311 465.311" style="padding:5px" xml:space="preserve">
                             <g>
                                 <path d="M372.811,51.002h-59.908V36.566C312.902,16.404,296.499,0,276.335,0h-87.356c-20.163,0-36.567,16.404-36.567,36.566v14.436
                                     H92.5c-20.726,0-37.587,16.861-37.587,37.587v38.91c0,8.284,6.716,15,15,15h7.728v307.812c0,8.284,6.716,15,15,15H372.67
@@ -408,7 +408,7 @@ export default class MeasuresControl {
 		let drawnFeatures = this._drawCtrl.getAll();
 		drawnFeatures.features.forEach((feature) => {
 			try {
-				if (feature.geometry.type == 'Polygon') {
+				if (feature.geometry.type === 'Polygon') {
 					let area = this._formatMeasure(turf.area(feature), true);
 					let centroid = turf.centroid(feature);
 					let measurement = `${area}`;
@@ -416,7 +416,7 @@ export default class MeasuresControl {
 						measurement,
 					};
 					features.push(centroid);
-				} else if (feature.geometry.type == 'LineString') {
+				} else if (feature.geometry.type === 'LineString') {
 					let segments = turf.lineSegment(feature);
 					segments.features.forEach((segment) => {
 						let centroid = turf.centroid(segment);
