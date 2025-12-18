@@ -47,6 +47,7 @@ options = {
             },
             units: 'imperial', //or metric, the default
             unitsGroupingSeparator: ' ', // optional. use a space instead of ',' for separating thousands (3 digits group). Do not send this to use the browser default
+            showOnlyTotalLineLength: true, // optional. when measuring area, show only the total line length instead of each segment length
             style: {
                 text: {
                     radialOffset:  0.9,

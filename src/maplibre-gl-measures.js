@@ -417,16 +417,26 @@ export default class MeasuresControl {
 					};
 					features.push(centroid);
 				} else if (feature.geometry.type === 'LineString') {
-					let segments = turf.lineSegment(feature);
-					segments.features.forEach((segment) => {
-						let centroid = turf.centroid(segment);
-						let lineLength = this._formatMeasure(turf.length(segment) * 1000); //km to m
-						let measurement = `${lineLength}`;
+					if (this.options?.showOnlyTotalLineLength) {
+						const lineLength = this._formatMeasure(turf.length(feature) * 1000); //km to m
+						const centroid = turf.centroid(feature);
+						const measurement = `${lineLength}`;
 						centroid.properties = {
 							measurement,
 						};
 						features.push(centroid);
-					});
+					} else {
+						let segments = turf.lineSegment(feature);
+						segments.features.forEach((segment) => {
+							let centroid = turf.centroid(segment);
+							let lineLength = this._formatMeasure(turf.length(segment) * 1000); //km to m
+							let measurement = `${lineLength}`;
+							centroid.properties = {
+								measurement,
+							};
+							features.push(centroid);
+						});
+					}
 				}
 			} catch (e) {
 				//Silently ignored
