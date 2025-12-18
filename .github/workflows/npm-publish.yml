@@ -3,6 +3,9 @@
 
 name: Publish to NPM
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
