@@ -9,6 +9,7 @@ declare module 'maplibre-gl-measures' {
 		};
 		units?: 'imperial' | 'metric';
 		unitsGroupingSeparator?: string;
+		showOnlyTotalLineLength?: boolean;
 		style?: {
 			text?: {
 				radialOffset?: number;
