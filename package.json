@@ -1,15 +1,15 @@
 {
 	"name": "maplibre-gl-measures",
-	"version": "0.0.17",
+	"version": "0.0.18",
 	"description": "Length and area measurements with linestrings and polygons",
-	"main": "src/maplibre-gl-measures.js",
-	"types": "src/maplibre-gl-measures.d.ts",
+	"main": "dist/maplibre-gl-measures.js",
+	"types": "dist/maplibre-gl-measures.d.ts",
 	"files": [
 		"dist"
 	],
 	"scripts": {
 		"format": "prettier --write src/*.{js,ts}",
-		"build": "vite build",
+		"build": "vite build && cp src/maplibre-gl-measures.d.ts dist/maplibre-gl-measures.d.ts",
 		"dev": "vite dev",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
