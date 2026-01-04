@@ -59,7 +59,11 @@
                 lengthMeasurementButtonTitle: 'Measure length',
                 clearMeasurementsButtonTitle:  'Clear measurements',
             },
-            units: 'imperial',
+            units: 'metric',
+            fixedLengthUnit: 'm', // metric: mm, cm, m, km | imperial: in, ft, yd, mi
+            fixedAreaUnit: 'm2', // metric: m2, ha, km2 | imperial: in2, ft2, yd2, ac, mi2
+            minimumFractionDigits: 0, // show at least n digits in the decimal part (100.00 turns to 100)
+            maximumFractionDigits: 2, // show at most n digits in the decimal part (100.123 turns to 100.12)
             unitsGroupingSeparator: ' ',
             showOnlyTotalLineLength: true,
             style: {

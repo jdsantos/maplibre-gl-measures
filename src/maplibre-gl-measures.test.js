@@ -23,14 +23,6 @@ vi.mock('@turf/turf', () => ({
 	length: vi.fn(() => 1),
 }));
 
-vi.mock('convert-units', () => ({
-	default: vi.fn(() => ({
-		from: vi.fn().mockReturnThis(),
-		toBest: vi.fn(() => ({ val: 100, unit: 'm' })),
-		to: vi.fn(() => 100),
-	}))
-}));
-
 describe('MeasuresControl', () => {
 	let ctrl;
 	let map;
@@ -54,21 +46,21 @@ describe('MeasuresControl', () => {
 	});
 
 	it('formats metric area correctly', () => {
-		expect(ctrl._formatAreaToMetricSystem(100)).toMatch(/100/);
+		expect(ctrl._formatAreaToMetricSystem(100)).toMatch(/100\.00.*m²/);
 	});
 
 	it('formats imperial area correctly', () => {
 		ctrl.options.units = 'imperial';
-		expect(ctrl._formatAreaToImperialSystem(100)).toMatch(/100/);
+		expect(ctrl._formatAreaToImperialSystem(100)).toMatch(/1,076\.39.*ft²/);
 	});
 
 	it('formats metric length correctly', () => {
-		expect(ctrl._formatToMetricSystem(100)).toMatch(/100/);
+		expect(ctrl._formatToMetricSystem(100)).toMatch(/100\.00.*m/);
 	});
 
 	it('formats imperial length correctly', () => {
 		ctrl.options.units = 'imperial';
-		expect(ctrl._formatToImperialSystem(100)).toMatch(/100/);
+		expect(ctrl._formatToImperialSystem(100)).toMatch(/328\.08.*ft/);
 	});
 
 	it('formats locale number with grouping', () => {
@@ -201,8 +193,40 @@ describe('MeasuresControl', () => {
 
 	it('formats measure', () => {
 		ctrl.options.units = 'metric';
-		expect(ctrl._formatMeasure(100)).toMatch(/100/);
+		expect(ctrl._formatMeasure(100)).toMatch(/100\.00.*m/);
 		ctrl.options.units = 'imperial';
-		expect(ctrl._formatMeasure(100)).toMatch(/100/);
+		expect(ctrl._formatMeasure(100)).toMatch(/328\.08.*ft/);
+	});
+
+	it('uses fixed unit for metric length', () => {
+		ctrl.options.units = 'metric';
+		ctrl.options.fixedLengthUnit = 'm';
+		expect(ctrl._formatToMetricSystem(5000)).toMatch(/5,?000\.00.*m/);
+	});
+
+	it('uses fixed unit for imperial length', () => {
+		ctrl.options.units = 'imperial';
+		ctrl.options.fixedLengthUnit = 'mi';
+		expect(ctrl._formatToImperialSystem(100)).toMatch(/0\.06.*mi/);
+	});
+
+	it('uses fixed unit for metric area', () => {
+		ctrl.options.units = 'metric';
+		ctrl.options.fixedAreaUnit = 'm2';
+		expect(ctrl._formatAreaToMetricSystem(50000)).toMatch(/50,?000\.00.*m²/);
+	});
+
+	it('uses fixed unit for imperial area', () => {
+		ctrl.options.units = 'imperial';
+		ctrl.options.fixedAreaUnit = 'ft2';
+		expect(ctrl._formatAreaToImperialSystem(100)).toMatch(/1,?076\.39.*ft²/);
+	});
+
+	it('uses different fixed units for length and area', () => {
+		ctrl.options.units = 'metric';
+		ctrl.options.fixedLengthUnit = 'km';
+		ctrl.options.fixedAreaUnit = 'ha';
+		expect(ctrl._formatToMetricSystem(5000)).toMatch(/5\.00.*km/);
+		expect(ctrl._formatAreaToMetricSystem(50000)).toMatch(/5\.00.*ha/);
 	});
 });
