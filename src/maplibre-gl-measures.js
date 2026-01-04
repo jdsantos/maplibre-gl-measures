@@ -1,6 +1,6 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
-import convert from 'convert-units';
+import convert from './convert-units.js';
 
 const DRAW_LABELS_SOURCE_ID = 'source-draw-labels';
 const DRAW_LABELS_LAYER_ID = 'layer-draw-labels';
@@ -160,45 +160,75 @@ export default class MeasuresControl {
 
 	// area in sqm
 	_formatAreaToMetricSystem(dist) {
-		let measure = convert(dist).from('m2').toBest({ system: 'metric' });
-		let unit = measure.unit.replaceAll('2', '²');
-		let val = this._getLocaleNumber(measure.val);
-		return `${val} ${unit}`;
+		let measure;
+		let unit;
+		if (this.options?.fixedAreaUnit) {
+			measure = convert(dist).from('m2').to(this.options.fixedAreaUnit);
+			unit = this.options.fixedAreaUnit;
+		} else {
+			measure = convert(dist).from('m2').toBest({ system: 'metric' });
+			unit = measure.unit;
+		}
+		let val = this._getLocaleNumber(measure.val || measure);
+		return `${val} ${unit.replaceAll('2', '²')}`;
 	}
 
 	// area in sqm
 	_formatAreaToImperialSystem(dist) {
-		let measure = convert(dist).from('m2').to('mi2');
-		measure = convert(measure).from('mi2').toBest({ system: 'imperial' });
-		let unit = measure.unit.replaceAll('2', '²');
-		let val = this._getLocaleNumber(measure.val);
-		return `${val} ${unit}`;
+		let measure;
+		let unit;
+		if (this.options?.fixedAreaUnit) {
+			measure = convert(dist).from('m2').to(this.options.fixedAreaUnit);
+			unit = this.options.fixedAreaUnit;
+		} else {
+			measure = convert(dist).from('m2').to('mi2');
+			measure = convert(measure).from('mi2').toBest({ system: 'imperial' });
+			unit = measure.unit;
+		}
+		let val = this._getLocaleNumber(measure.val || measure);
+		return `${val} ${unit.replaceAll('2', '²')}`;
 	}
 
 	_formatToMetricSystem(dist) {
-		let measure = convert(dist).from('m').toBest({ system: 'metric' });
-		let val = this._getLocaleNumber(measure.val);
-		return `${val} ${measure.unit}`;
+		let measure;
+		let unit;
+		if (this.options?.fixedLengthUnit) {
+			measure = convert(dist).from('m').to(this.options.fixedLengthUnit);
+			unit = this.options.fixedLengthUnit;
+		} else {
+			measure = convert(dist).from('m').toBest({ system: 'metric' });
+			unit = measure.unit;
+		}
+		let val = this._getLocaleNumber(measure.val || measure);
+		return `${val} ${unit}`;
 	}
 
 	_formatToImperialSystem(dist) {
-		let measure = convert(dist).from('m').to('mi');
-		measure = convert(measure).from('mi').toBest({ system: 'imperial' });
-		let val = this._getLocaleNumber(measure.val);
-		return `${val} ${measure.unit}`;
+		let measure;
+		let unit;
+		if (this.options?.fixedLengthUnit) {
+			measure = convert(dist).from('m').to(this.options.fixedLengthUnit);
+			unit = this.options.fixedLengthUnit;
+		} else {
+			measure = convert(dist).from('m').to('mi');
+			measure = convert(measure).from('mi').toBest({ system: 'imperial' });
+			unit = measure.unit;
+		}
+		let val = this._getLocaleNumber(measure.val || measure);
+		return `${val} ${unit}`;
 	}
 
 	_getLocaleNumber(val) {
-		// Format without grouping separator
-		let formattedNumber = val.toLocaleString(undefined, {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
+		let num = typeof val === 'number' ? val : val.val !== undefined ? val.val : val;
+
+		let formattedNumber = num.toLocaleString(undefined, {
+			minimumFractionDigits: this.options?.minimumFractionDigits ?? 2,
+			maximumFractionDigits: this.options?.maximumFractionDigits ?? 2,
 			useGrouping: !this.options?.unitsGroupingSeparator,
 		});
 
 		let groupingSeparator = this.options?.unitsGroupingSeparator;
 		if (groupingSeparator) {
-			// Insert spaces for grouping
 			formattedNumber = formattedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, groupingSeparator);
 		}
 

@@ -9,6 +9,10 @@ declare module 'maplibre-gl-measures' {
 		};
 		units?: 'imperial' | 'metric';
 		unitsGroupingSeparator?: string;
+		minimumFractionDigits?: number;
+		maximumFractionDigits?: number;
+		fixedLengthUnit?: 'mm' | 'cm' | 'm' | 'km' | 'in' | 'ft' | 'yd' | 'mi';
+		fixedAreaUnit?: 'mm2' | 'cm2' | 'm2' | 'km2' | 'ha' | 'in2' | 'ft2' | 'yd2' | 'ac' | 'mi2';
 		showOnlyTotalLineLength?: boolean;
 		style?: {
 			text?: {
