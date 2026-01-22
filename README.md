@@ -3,6 +3,7 @@
 ![maplibre-gl-measures](https://raw.githubusercontent.com/jdsantos/maplibre-gl-measures/main/docs/screenshot.PNG)
 
 [![npm version](https://badge.fury.io/js/maplibre-gl-measures.svg)](https://badge.fury.io/js/maplibre-gl-measures)
+[![npm downloads](https://img.shields.io/npm/dm/maplibre-gl-measures)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/github/actions/workflow/status/jdsantos/maplibre-gl-measures/tests.yml?label=tests&style=round-square)](https://github.com/jdsantos/maplibre-gl-measures/actions?query=workflow%3ATests)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
