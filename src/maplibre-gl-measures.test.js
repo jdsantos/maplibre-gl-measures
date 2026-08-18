@@ -26,11 +26,14 @@ vi.mock('@turf/turf', () => ({
 describe('MeasuresControl', () => {
 	let ctrl;
 	let map;
+	let mapLoaded;
 
 	beforeEach(() => {
+		mapLoaded = false;
 		ctrl = new MeasuresControl({ units: 'metric' });
 		map = {
 			addControl: vi.fn(),
+			removeControl: vi.fn(),
 			on: vi.fn(),
 			off: vi.fn(),
 			remove: vi.fn(),
@@ -42,6 +45,7 @@ describe('MeasuresControl', () => {
 			moveLayer: vi.fn(),
 			removeLayer: vi.fn(),
 			removeSource: vi.fn(),
+			loaded: vi.fn(()=>mapLoaded)
 		};
 	});
 
@@ -110,18 +114,27 @@ describe('MeasuresControl', () => {
 		// Manually append to body to test removal
 		document.body.appendChild(ctrl._container);
 		ctrl.onRemove();
+		expect(map.removeControl).toHaveBeenCalledWith(ctrl._drawCtrl);
 		expect(document.body.contains(ctrl._container)).toBe(false);
 		expect(map.removeLayer).toHaveBeenCalled();
 	});
 
 	it('registers map events', () => {
 		ctrl.onAdd(map);
-		expect(map.on).toHaveBeenCalledWith('load', expect.any(Function));
-		expect(map.on).toHaveBeenCalledWith('draw.create', expect.any(Function));
-		expect(map.on).toHaveBeenCalledWith('draw.update', expect.any(Function));
-		expect(map.on).toHaveBeenCalledWith('draw.delete', expect.any(Function));
-		expect(map.on).toHaveBeenCalledWith('draw.render', expect.any(Function));
+		expect(map.on).toHaveBeenCalledWith('draw.create', ctrl._handleOnCreate);
+		expect(map.on).toHaveBeenCalledWith('draw.update', ctrl._handleOnUpdate);
+		expect(map.on).toHaveBeenCalledWith('draw.delete', ctrl._handleOnDelete);
+		expect(map.on).toHaveBeenCalledWith('draw.render', ctrl._handleOnRender);
 	});
+
+	it('unregisters map events on removal', () => {
+		ctrl.onAdd(map);	
+		ctrl.onRemove(map);
+		expect(map.off).toHaveBeenCalledWith('draw.create', ctrl._handleOnCreate);
+		expect(map.off).toHaveBeenCalledWith('draw.update', ctrl._handleOnUpdate);
+		expect(map.off).toHaveBeenCalledWith('draw.delete', ctrl._handleOnDelete);
+		expect(map.off).toHaveBeenCalledWith('draw.render', ctrl._handleOnRender);
+	})
 
 	it('handles onRender and onCreate callbacks', () => {
 		const onRender = vi.fn();
@@ -129,6 +142,7 @@ describe('MeasuresControl', () => {
 		ctrl.options.onRender = onRender;
 		ctrl.options.onCreate = onCreate;
 
+		ctrl._updateLabels = vi.fn();
 		ctrl._handleOnRender();
 		expect(onRender).toHaveBeenCalled();
 
@@ -174,9 +188,21 @@ describe('MeasuresControl', () => {
 		expect(features.features.length).toBe(1);
 	});
 
-	it('recreates source and layers', () => {
+	it('adds listener to recreate sources and layers when map is not yet loaded', ()=>{
+		mapLoaded = false;
 		ctrl.onAdd(map);
-		ctrl._recreateSourceAndLayers();
+		expect(map.on).toHaveBeenCalledWith('load', expect.any(Function));
+	})
+
+	in('directly ensures sources and layers exist when map is already loaded', ()=>{
+		mapLoaded = true;
+		ctrl.onAdd(map);
+		expect(ctrl._recreateSourceAndLayers).toHaveBeenCalled();
+	})
+
+	it('recreates source and layers', () => {
+		mapLoaded = true;
+		ctrl.onAdd(map);
 		expect(map.addSource).toHaveBeenCalled();
 		expect(map.addLayer).toHaveBeenCalled();
 	});
