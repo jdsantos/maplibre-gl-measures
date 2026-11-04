@@ -1,5 +1,8 @@
-import { resolve } from 'path'
-import { defineConfig } from 'vite'
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'vite';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
 	define: {
@@ -14,10 +17,10 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			output: {
-				exports: "named"
-			}
+				exports: 'named',
+			},
 		},
 		sourcemap: true,
 		outDir: 'dist',
 	},
-})
+});

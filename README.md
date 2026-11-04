@@ -20,6 +20,7 @@ This plugin works with [MapLibre GL JS](http://maplibre.org) and is inspired by 
 - **Customizable Units**: Fixed units for length (mm, cm, m, km, in, ft, yd, mi) and area (mm², cm², m², km², ha, in², ft², yd², ac, mi²)
 - **Flexible Formatting**: Control number formatting with custom grouping separators and precision
 - **Styling Options**: Full customization of colors, line widths, fill opacity, and text styles
+- **Dark Mode Support**: Control icons inherit the current control color
 - **Event Callbacks**: `onRender` and `onCreate` callbacks for handling drawn features
 - **TypeScript Support**: Full TypeScript definitions included
 - **Easy Integration**: Simple control that integrates seamlessly with MapLibre GL JS
@@ -277,7 +278,7 @@ This plugin depends on the following libraries:
 
 ## Supported Versions
 
-- MapLibre GL JS 2.4 and later versions
+- MapLibre GL JS 2.4 and later versions (tested with MapLibre GL JS 6.x)
 - Earlier versions are not supported and have not been tested
 
 ## Browser Support

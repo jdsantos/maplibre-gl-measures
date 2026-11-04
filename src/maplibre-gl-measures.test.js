@@ -31,6 +31,8 @@ describe('MeasuresControl', () => {
 		ctrl = new MeasuresControl({ units: 'metric' });
 		map = {
 			addControl: vi.fn(),
+			removeControl: vi.fn(),
+			loaded: vi.fn(() => false),
 			on: vi.fn(),
 			off: vi.fn(),
 			remove: vi.fn(),
@@ -102,16 +104,45 @@ describe('MeasuresControl', () => {
 	});
 
 	it('adds and removes the control', () => {
+		map.getLayer.mockReturnValue({});
+		map.getSource.mockReturnValue({});
 		const container = ctrl.onAdd(map);
 		expect(map.addControl).toHaveBeenCalledWith(ctrl._drawCtrl, 'top-left');
 		document.body.appendChild(container);
-		expect(ctrl._container.parentNode).not.toBeNull();
+		expect(container.parentNode).not.toBeNull();
 
-		// Manually append to body to test removal
-		document.body.appendChild(ctrl._container);
 		ctrl.onRemove();
-		expect(document.body.contains(ctrl._container)).toBe(false);
-		expect(map.removeLayer).toHaveBeenCalled();
+		expect(document.body.contains(container)).toBe(false);
+		expect(map.removeControl).toHaveBeenCalledWith(ctrl._drawCtrl);
+		expect(map.off).toHaveBeenCalledWith('load', expect.any(Function));
+		expect(map.off).toHaveBeenCalledWith('draw.create', expect.any(Function));
+		expect(map.off).toHaveBeenCalledWith('draw.update', expect.any(Function));
+		expect(map.off).toHaveBeenCalledWith('draw.delete', expect.any(Function));
+		expect(map.off).toHaveBeenCalledWith('draw.render', expect.any(Function));
+		expect(map.removeLayer).toHaveBeenCalledWith('layer-draw-labels');
+		expect(map.removeSource).toHaveBeenCalledWith('source-draw-labels');
+	});
+
+	it('can be removed and re-added to the map', () => {
+		const firstContainer = ctrl.onAdd(map);
+		document.body.appendChild(firstContainer);
+
+		ctrl.onRemove();
+		expect(map.removeControl).toHaveBeenCalledWith(ctrl._drawCtrl);
+
+		const secondContainer = ctrl.onAdd(map);
+		expect(map.addControl).toHaveBeenCalledTimes(2);
+		expect(secondContainer).not.toBe(firstContainer);
+		expect(secondContainer.querySelectorAll('button').length).toBe(3);
+		expect(ctrl._map).toBe(map);
+	});
+
+	it('recreates the source and layers immediately when the map is already loaded', () => {
+		map.loaded.mockReturnValue(true);
+		ctrl.onAdd(map);
+		expect(map.addSource).toHaveBeenCalled();
+		expect(map.addLayer).toHaveBeenCalled();
+		expect(map.on).not.toHaveBeenCalledWith('load', expect.any(Function));
 	});
 
 	it('registers map events', () => {

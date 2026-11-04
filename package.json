@@ -1,6 +1,6 @@
 {
 	"name": "maplibre-gl-measures",
-	"version": "0.0.20",
+	"version": "0.0.21",
 	"description": "Length and area measurements with linestrings and polygons",
 	"main": "dist/maplibre-gl-measures.js",
 	"types": "dist/maplibre-gl-measures.d.ts",
@@ -35,11 +35,11 @@
 		"@turf/turf": "^7.2.0"
 	},
 	"devDependencies": {
-		"@vitest/coverage-v8": "^4.0.15",
+		"@vitest/coverage-v8": "^4.1.12",
 		"jsdom": "^27.3.0",
 		"prettier": "^3.5.1",
-		"vite": "^8.0.16",
-		"vitest": "^4.0.15"
+		"vite": "^8.3.5",
+		"vitest": "^4.1.12"
 	},
 	"peerDependencies": {
 		"maplibre-gl": ">=2.1.6"
